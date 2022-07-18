@@ -41,6 +41,15 @@ def get_articles(url, category):
         outputs.append(output)
     return outputs
 
+def get_links(url):
+    links = []
+    headers = {'User-Agent': 'Codeup Data Science'}
+    response = get(url, headers=headers)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    for link in soup.select('h2 a[href]'):
+        links.append(link['href'])
+    return links
+
 def get_news_articles():
     outputs = []
     base_url = 'https://inshorts.com/en/read'
@@ -91,12 +100,8 @@ def read_url_or_file_codeup(filename='codeup_articles.json', query_url=False):
             return None
     else:
         print('Querying url')
-        url_1 = 'https://codeup.com/tips-for-prospective-students/is-our-cloud-administration-program-right-for-you/'
-        url_2 = 'https://codeup.com/workshops/pride-in-tech-panel/'
-        url_3 = 'https://codeup.com/tips-for-prospective-students/mental-health-first-aid-training/'
-        url_4 = 'https://codeup.com/workshops/codeup-dallas-how-to-succeed-at-a-coding-bootcamp-on-june-9th/'
-        url_5 = 'https://codeup.com/featured/our-acquisition-of-the-rackspace-cloud-academy-one-year-later/'
-        select_articles = [url_1, url_2, url_3, url_4, url_5]
+        url_home = 'https://codeup.com/blog/'
+        select_articles = get_links(url_home)
         try:
             dictionary = get_blog_articles(select_articles)
             cache_data(dictionary, filename=filename)
